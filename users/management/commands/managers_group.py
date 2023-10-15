@@ -7,9 +7,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            managers_group = Group.objects.get(name='Managers')
+            Group.objects.get(name='Managers')
             self.stdout.write(self.style.SUCCESS('Managers group already exists.'))
         except Group.DoesNotExist:
-            managers_group = Group.objects.create(name='Managers')
+            Group.objects.create(name='Managers')
             self.stdout.write(self.style.SUCCESS('Managers group created successfully.'))
-

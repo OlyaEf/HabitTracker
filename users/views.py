@@ -1,3 +1,29 @@
-from django.shortcuts import render
+from rest_framework import viewsets, status
+from rest_framework.response import Response
 
-# Create your views here.
+from users.models import User
+from users.seriliazers import UserSerializer
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def create(self, request, *args, **kwargs):
+        # получаем данные отправленные в запросе
+        data = request.data
+
+        # Извлекаем значение Telegram ID из данных запроса
+        telegram_id = data.get('telegram_id', None)
+
+        # Проверка на валидность
+        if not telegram_id:
+            return Response({"telegram_id": "Это поле обязательно."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Создаем пользователя с Telegram ID
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

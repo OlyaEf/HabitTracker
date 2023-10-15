@@ -10,7 +10,10 @@ User = get_user_model()
 class Habit(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='habits', verbose_name=_('User'))
     place = models.CharField(max_length=255, verbose_name=_('Place'), **NULLABLE)
+
     time = models.TimeField(verbose_name=_('Time'), **NULLABLE)
+    next_notification_time = models.DateTimeField(verbose_name=_('Next Notification Time'), **NULLABLE)
+
     action = models.CharField(max_length=255, verbose_name=_('Action'))
     is_pleasant_habit = models.BooleanField(default=False, verbose_name=_('Is Pleasant Habit'), **NULLABLE)
     related_habit = models.ForeignKey('self', on_delete=models.SET_NULL, **NULLABLE,
@@ -21,7 +24,13 @@ class Habit(models.Model):
     is_public = models.BooleanField(default=False, verbose_name=_('Is Public'), **NULLABLE)
 
     def __str__(self):
-        return f'{self.user} - {self.action}'
+        labels = []
+        if self.is_public:
+            labels.append("public")
+        if self.is_pleasant_habit:
+            labels.append("pleasant habit")
+        label_str = " (" + ", ".join(labels) + ")" if labels else ""
+        return f'{self.user} - {self.action}{label_str}'
 
     class Meta:
         verbose_name = _('Habit')

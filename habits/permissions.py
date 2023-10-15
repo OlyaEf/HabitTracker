@@ -11,7 +11,6 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         # Разрешение на чтение всегда разрешено
         if request.method in permissions.SAFE_METHODS:
             return True
-
         # Разрешение на редактирование или удаление для владельца привычки
         return obj.user == request.user
 

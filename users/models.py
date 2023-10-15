@@ -13,6 +13,7 @@ class UserRoles(models.TextChoices):
 class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True, verbose_name=_('Email'))
+    telegram_id = models.CharField(max_length=255, verbose_name=_('Telegram ID'), **NULLABLE)
 
     phone = models.CharField(max_length=35, verbose_name=_('Phone'), **NULLABLE)
     city = models.CharField(max_length=150, verbose_name=_('City'), **NULLABLE)

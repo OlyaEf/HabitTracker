@@ -1,0 +1,3 @@
+[flake8]
+exclude = venv,*.pyc, .venv, migrations
+ignore = E501

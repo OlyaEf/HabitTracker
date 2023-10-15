@@ -19,8 +19,8 @@ class HabitSerializer(serializers.ModelSerializer):
                 'Привычка не может иметь одновременно связанную привычку и вознаграждение.'
             )
 
-        if estimated_time > 2:
-            raise serializers.ValidationError('Оценочное время выполнения не должно превышать 120 секунд.')
+        if estimated_time > 60:
+            raise serializers.ValidationError('Оценочное время выполнения не должно превышать 60 мин.')
 
         if related_habit and not related_habit.is_pleasant_habit:
             raise serializers.ValidationError('Связанная привычка должна быть приятной привычкой.')
