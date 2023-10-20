@@ -2,6 +2,8 @@ FROM python:3
 
 WORKDIR /code
 
+EXPOSE 8000
+
 COPY ./requirements.txt /code/
 
 RUN pip install -r requirements.txt
@@ -9,6 +11,9 @@ RUN pip install -r requirements.txt
 COPY . .
 
 # Загрузите переменные окружения из файла .env
-RUN ["python", "-c", "from dotenv import load_dotenv; load_dotenv()"]
+RUN pip install python-dotenv
 
-CMD ["python", "manage.py", "runserver"]
+COPY .env /code/
+
+CMD ["python", "manage.py", "migrate"]
+
