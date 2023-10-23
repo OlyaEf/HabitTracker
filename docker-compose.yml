@@ -27,7 +27,7 @@ services:
   app:
     build: .
     tty: true
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000
     ports:
       - '8000:8000'
     volumes:
@@ -39,6 +39,7 @@ services:
 
   celery:
     build: .
+    env_file: .env.dev
     tty: true
     command: celery -A config worker -l INFO
     depends_on:
@@ -47,6 +48,7 @@ services:
 
   celery_beat:
     build: .
+    env_file: .env.dev
     tty: true
     command: celery -A config beat -l INFO -S django
     depends_on:
