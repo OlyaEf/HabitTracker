@@ -9,6 +9,11 @@ class HabitViewSet(viewsets.ModelViewSet):
     serializer_class = HabitSerializer
     permission_classes = [IsOwnerOrReadOnly]  # Применение кастомных прав доступа
 
+    def create(self, request, *args, **kwargs):
+        #  TODO: добавить создание задачи на оповещение
+
+        return super().create(request, *args, **kwargs)
+
 
 class PublicHabitViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Habit.objects.filter(is_public=True)  # Фильтр публичных привычек

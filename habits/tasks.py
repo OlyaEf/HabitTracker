@@ -20,3 +20,5 @@ def send_habit_notification(habit_id, token):
 
     except Habit.DoesNotExist:
         pass
+
+    #  TODO: создать реализацию создания задачи (СЕРЛЕРИ БИТ-переодик таск)
