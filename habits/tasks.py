@@ -1,24 +1,23 @@
+import os
 from celery import shared_task
 from django.utils import timezone
-
-from .telegram_send_message import send_telegram_message
+from .models import Habit
+from .send_telegram_message import send_telegram_message
+from datetime import datetime, timedelta
 
 
 @shared_task
-def send_habit_notification(habit_id, token):
-    from .models import Habit
-    try:
-        habit = Habit.objects.get(id=habit_id)
+def send_habit_notification():
+    now_time = timezone.now() + timedelta(hours=2)   # расчет времени для региона
+    token = os.getenv('TELEGRAM_BOT_TOKEN')
+    habits_with_users = Habit.objects.filter(user__telegram_id__isnull=False).prefetch_related('user')
 
-        if habit.next_notification_time <= timezone.now():
-            message = f"Пора выполнить привычку: {habit.action}"
-            send_telegram_message(token, habit.telegram_id, message)
+    for habit in habits_with_users:
+        habit_time = datetime.combine(now_time.date(), habit.time)
+        habit_time_aware = timezone.make_aware(habit_time, now_time.tzinfo)
 
-            next_notification_time = habit.next_notification_time + timezone.timedelta(days=1)
-            habit.next_notification_time = next_notification_time
-            habit.save()
-
-    except Habit.DoesNotExist:
-        pass
-
-    #  TODO: создать реализацию создания задачи (СЕРЛЕРИ БИТ-переодик таск)
+        if habit_time_aware <= now_time - timedelta(minutes=5):
+            message = f'Через 5 минут необходимо выполнять вашу привычку! ' \
+                      f'Вам необходимо выполнить: {habit.action} ' \
+                      f'После этого вы сможете вознаградить себя: {habit.reward if habit.reward else habit.related_habit}'
+            send_telegram_message(token=token, telegram_id=habit.user.telegram_id, message=message)

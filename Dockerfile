@@ -15,4 +15,4 @@ RUN pip install python-dotenv
 
 COPY .env /code/
 
-CMD ["python", "manage.py", "migrate"]
+CMD ["sh", "-c", "python manage.py migrate"]

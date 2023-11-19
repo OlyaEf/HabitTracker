@@ -95,7 +95,8 @@ DATABASES = {
         'NAME': 'db_HabitTracker',
         'USER': 'postgres',
         'PASSWORD': os.getenv('PASSWORD_POSTGRES'),
-        'HOST': 'db',
+        'HOST': 'db',  ## подключение БД к докеру
+        # 'HOST': 'localhost',  ## подключение БД локально
         'PORT': '5432',
     }
 }
@@ -186,6 +187,10 @@ CELERY_BEAT_SCHEDULE = {
     'task-disconnect_inactive_users': {
         'task': 'users.tasks.disconnect_inactive_users',  # Путь к задаче
         'schedule': timedelta(minutes=2),  # Расписание выполнения задачи (например, каждые 10 минут)
+    },
+    'send_habit_notification': {
+        'task': 'habits.tasks.send_habit_notification',  # Путь к задаче
+        'schedule': timedelta(days=1),
     },
 }
 

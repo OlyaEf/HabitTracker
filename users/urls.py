@@ -15,6 +15,8 @@ router.register(r'users', UserViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('create/', UserViewSet.as_view({'post': 'create'}), name='user_create'),
+    path('<int:pk>/', UserViewSet.as_view({'patch': 'partial_update'}), name='user_partial_update'),
     path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]

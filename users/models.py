@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 
 from constants import NULLABLE
+from users.managers import CustomUserManager
 
 
 class UserRoles(models.TextChoices):
@@ -20,6 +21,7 @@ class User(AbstractUser):
     avatar = models.ImageField(upload_to='user/', verbose_name=_('Avatar'), **NULLABLE)
     role = models.CharField(max_length=9, choices=UserRoles.choices, default=UserRoles.MEMBER)
 
+    objects = CustomUserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
